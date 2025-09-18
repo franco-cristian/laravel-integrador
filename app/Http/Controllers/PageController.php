@@ -13,18 +13,24 @@ class PageController extends Controller
      */
     public function dashboard()
     {
-        // Lista de tipos de dólar para el formulario
+        // Lista de tipos de dólar para los formularios
         $tiposDolar = [
             'oficial' => 'Oficial',
             'blue' => 'Blue',
             'bolsa' => 'Bolsa (MEP)',
-            'contado_con_liqui' => 'Contado con Liqui (CCL)',
+            'contadoconliqui' => 'Contado con Liquidación (CCL)',
             'mayorista' => 'Mayorista',
             'cripto' => 'Cripto',
             'tarjeta' => 'Tarjeta',
         ];
 
-        return view('dashboard', ['tiposDolar' => $tiposDolar]);
+        // Generar una lista de años para el selector (ej: desde 2020 hasta el año actual)
+        $anios = range(date('Y'), 2020);
+
+        return view('dashboard', [
+            'tiposDolar' => $tiposDolar,
+            'anios' => $anios
+        ]);
     }
 
     /**

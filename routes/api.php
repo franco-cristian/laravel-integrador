@@ -10,3 +10,6 @@ Route::get('/convertir', [CotizacionController::class, 'convertir']);
 
 // Endpoint para el ejemplo de Guzzle (JSONPlaceholder)
 Route::get('/get-todo', [PageController::class, 'getTodoExample']);
+
+// Promedios
+Route::get('/cotizaciones/promedio-mensual', [CotizacionController::class, 'promedioMensual']);
