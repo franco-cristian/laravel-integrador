@@ -1,0 +1,234 @@
+name: 'Cotización de Dólar'
+description: |-
+
+  APIs para la conversión de dólar a pesos y consulta de promedios históricos.
+endpoints:
+  -
+    httpMethods:
+      - GET
+    uri: api/convertir
+    metadata:
+      groupName: 'Cotización de Dólar'
+      groupDescription: |-
+
+        APIs para la conversión de dólar a pesos y consulta de promedios históricos.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Conversor en Tiempo Real'
+      description: |-
+        Convierte un monto en dólares (USD) a pesos argentinos (ARS) utilizando la cotización
+        en tiempo real de un tipo de dólar específico.
+      authenticated: false
+      deprecated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      valor:
+        name: valor
+        description: 'El monto en dólares a convertir.'
+        required: true
+        example: 150.5
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      tipo:
+        name: tipo
+        description: "Opcional. El tipo de cotización a utilizar. Si no se envía, se usa 'oficial'."
+        required: false
+        example: blue
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      valor: 150.5
+      tipo: blue
+    bodyParameters:
+      valor:
+        name: valor
+        description: 'Must be at least 0.01.'
+        required: true
+        example: 27
+        type: number
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      tipo:
+        name: tipo
+        description: ''
+        required: false
+        example: blue
+        type: string
+        enumValues:
+          - oficial
+          - blue
+          - bolsa
+          - contadoconliqui
+          - mayorista
+          - cripto
+          - tarjeta
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      valor: 27
+      tipo: blue
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"tipo_cotizacion":"blue","valor_dolar":150.5,"valor_venta_dolar":1505,"valor_compra_dolar":1485,"resultado_en_pesos_venta":226502.5,"resultado_en_pesos_compra":223492.5,"fuente":"https:\/\/dolarapi.com","ultima_actualizacion":"2025-09-18T14:34:00.000Z"}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+        description: null
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/cotizaciones/promedio-mensual
+    metadata:
+      groupName: 'Cotización de Dólar'
+      groupDescription: |-
+
+        APIs para la conversión de dólar a pesos y consulta de promedios históricos.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Promedio Mensual Histórico'
+      description: |-
+        Calcula el promedio mensual de la cotización de compra o venta para un tipo de dólar,
+        mes y año específicos, basado en los datos almacenados en la base de datos.
+      authenticated: false
+      deprecated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      anio:
+        name: anio
+        description: 'El año para el cálculo.'
+        required: true
+        example: 2025
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      mes:
+        name: mes
+        description: 'El mes para el cálculo (1-12).'
+        required: true
+        example: 9
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      tipo_dolar:
+        name: tipo_dolar
+        description: 'El tipo de dólar a promediar.'
+        required: true
+        example: blue
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+      tipo_valor:
+        name: tipo_valor
+        description: "El valor a promediar ('compra' o 'venta')."
+        required: true
+        example: venta
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        custom: []
+    cleanQueryParameters:
+      anio: 2025
+      mes: 9
+      tipo_dolar: blue
+      tipo_valor: venta
+    bodyParameters:
+      anio:
+        name: anio
+        description: 'Must be a valid date in the format <code>Y</code>. Must be at least 2000 characters.'
+        required: true
+        example: bngzmiyvdljnikhwaykcmyuwpwlvqwrsitcpscqldzsnrwtujwvlxjklqppwqbewtnnoqitpxntltcvipojsausgioglrbchgsrzyhcttwbkmkftmgosgtvnbobmzezcrcvalexqztppihrtgkkrerexhqziqvndjouolkgssaaypacbpeaybeqdpmkbfywhzmitnadsmrvbekdxdemofrggdrzcntxpvfaybyznkfbqoezonyqoewjbrzzabxblgvzzddqnfsrkycqdnhzrktyiixxfimbnlcqpsktxrjtqjhqcvcuphijpurfuavpadbixxveywjxjynvkqwvyoxhaakfdlwzlkdidhwnpbeedexnjzbtfsusczxslxsmdqlbmccrxlvbqqaoadotsqfahakzuocywklhwyqpxqtukasrfcacbixszfdfwblzcatijadzidpwasgnnvpgzetkkzglgbpfeijzfirbfmnyzpjiewqozeugghcjwovpwqrirooelambubqytzjyiqezaidtgrzmldsqfclzflyemehdapjvgercftckwfevmwurdyqdejshholoweqyqxpabdfcbbimtgtbnmonbbxsyralfpyollokjnttdnfkvreoovpjtbactjxlontxowpquieppkltoskmehdttopcdlfbmxyxkunzlyjvifnbkgxzjqnoutzxbeomjcxwntdpnsjvemogajnpxfxehrlxiwldqhoekvdppysmuihihcdbeltisfqjhpprjnzvfrjizsxxxkoloqowbmbsxywaipkfgjrduyapouajtuhszjhizztdubpldrsbbulbydiodanpzjxcwotrojazujxlsnxcalszwjpfauplsnsfwlerrsumezwmvggintpntkdsiuigptzduqlajamtq
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      mes:
+        name: mes
+        description: 'Must be between 1 and 12.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      tipo_dolar:
+        name: tipo_dolar
+        description: 'The <code>tipo</code> of an existing record in the cotizaciones table.'
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      tipo_valor:
+        name: tipo_valor
+        description: ''
+        required: true
+        example: venta
+        type: string
+        enumValues:
+          - compra
+          - venta
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      anio: bngzmiyvdljnikhwaykcmyuwpwlvqwrsitcpscqldzsnrwtujwvlxjklqppwqbewtnnoqitpxntltcvipojsausgioglrbchgsrzyhcttwbkmkftmgosgtvnbobmzezcrcvalexqztppihrtgkkrerexhqziqvndjouolkgssaaypacbpeaybeqdpmkbfywhzmitnadsmrvbekdxdemofrggdrzcntxpvfaybyznkfbqoezonyqoewjbrzzabxblgvzzddqnfsrkycqdnhzrktyiixxfimbnlcqpsktxrjtqjhqcvcuphijpurfuavpadbixxveywjxjynvkqwvyoxhaakfdlwzlkdidhwnpbeedexnjzbtfsusczxslxsmdqlbmccrxlvbqqaoadotsqfahakzuocywklhwyqpxqtukasrfcacbixszfdfwblzcatijadzidpwasgnnvpgzetkkzglgbpfeijzfirbfmnyzpjiewqozeugghcjwovpwqrirooelambubqytzjyiqezaidtgrzmldsqfclzflyemehdapjvgercftckwfevmwurdyqdejshholoweqyqxpabdfcbbimtgtbnmonbbxsyralfpyollokjnttdnfkvreoovpjtbactjxlontxowpquieppkltoskmehdttopcdlfbmxyxkunzlyjvifnbkgxzjqnoutzxbeomjcxwntdpnsjvemogajnpxfxehrlxiwldqhoekvdppysmuihihcdbeltisfqjhpprjnzvfrjizsxxxkoloqowbmbsxywaipkfgjrduyapouajtuhszjhizztdubpldrsbbulbydiodanpzjxcwotrojazujxlsnxcalszwjpfauplsnsfwlerrsumezwmvggintpntkdsiuigptzduqlajamtq
+      mes: 1
+      tipo_dolar: architecto
+      tipo_valor: venta
+    fileParameters: []
+    responses:
+      -
+        status: 422
+        content: '{"message":"The anio field must be an integer. (and 3 more errors)","errors":{"anio":["The anio field must be an integer.","The anio field must match the format Y.","The anio field must be at least 2000."],"tipo_dolar":["The selected tipo dolar is invalid."]}}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+        description: null
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []

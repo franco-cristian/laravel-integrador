@@ -8,47 +8,52 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use App\Models\Cotizacion;
 
+/**
+ * @group Cotización de Dólar
+ *
+ * APIs para la conversión de dólar a pesos y consulta de promedios históricos.
+ */
 class CotizacionController extends Controller
 {
     /**
-     * Convierte un valor en dólares a pesos argentinos según un tipo de cotización.
+     * Conversor en Tiempo Real
+     * 
+     * Convierte un monto en dólares (USD) a pesos argentinos (ARS) utilizando la cotización
+     * en tiempo real de un tipo de dólar específico.
+     *
+     * @unauthenticated
+     * 
+     * @queryParam valor float required El monto en dólares a convertir. Example: 150.50
+     * @queryParam tipo string Opcional. El tipo de cotización a utilizar. Si no se envía, se usa 'oficial'. Example: blue
+     *
      */
     public function convertir(Request $request)
     {
-        // 1. Validar los datos de entrada
         $request->validate([
             'valor' => 'required|numeric|min:0.01',
             'tipo' => 'sometimes|string|in:oficial,blue,bolsa,contadoconliqui,mayorista,cripto,tarjeta',
         ]);
 
         $valorUSD = (float) $request->query('valor');
-        // Si no se especifica el tipo, usamos 'oficial' por defecto
         $tipo = $request->query('tipo', 'oficial');
-
-        // 2. Obtener la URL base desde el archivo de configuración
         $baseUrl = config('services.dolarapi.url');
         $apiUrl = "{$baseUrl}/{$tipo}";
 
-        // 3. Consumir la API externa
         $response = Http::timeout(10)->get($apiUrl);
 
-        // 4. Manejar respuestas fallidas de la API externa
         if ($response->failed()) {
             Log::error("Error al consumir DolarAPI: " . $response->body());
-            return response()->json(['error' => 'No se pudo obtener la cotización en este momento.'], 502); // 502 Bad Gateway
+            return response()->json(['error' => 'No se pudo obtener la cotización en este momento.'], 502);
         }
 
         $data = $response->json();
-        // Obtenemos ambos valores, compra y venta
         $cotizacion_venta = $data['venta'] ?? null;
         $cotizacion_compra = $data['compra'] ?? null;
 
-        // 5. Manejar el caso en que la cotización no esté disponible
         if (is_null($cotizacion_venta)) {
             return response()->json(['error' => "La cotización para el tipo '{$tipo}' no está disponible."], 404);
         }
 
-        // 6. Calcular y devolver el resultado
         $resultado_venta = $valorUSD * $cotizacion_venta;
         $resultado_compra = $valorUSD * $cotizacion_compra;
 
@@ -63,49 +68,54 @@ class CotizacionController extends Controller
             'ultima_actualizacion' => $data['fechaActualizacion'] ?? null,
         ]);
     }
+
     /**
-     * Calcula el promedio mensual de una cotización específica.
+     * Promedio Mensual Histórico
+     * 
+     * Calcula el promedio mensual de la cotización de compra o venta para un tipo de dólar,
+     * mes y año específicos, basado en los datos almacenados en la base de datos.
+     *
+     * @unauthenticated
+     * 
+     * @queryParam anio integer required El año para el cálculo. Example: 2025
+     * @queryParam mes integer required El mes para el cálculo (1-12). Example: 9
+     * @queryParam tipo_dolar string required El tipo de dólar a promediar. Example: blue
+     * @queryParam tipo_valor string required El valor a promediar ('compra' o 'venta'). Example: venta
      */
     public function promedioMensual(Request $request)
     {
-        // 1. Validar los parámetros de entrada
         $validated = $request->validate([
             'anio' => 'required|integer|date_format:Y|min:2000',
             'mes' => 'required|integer|between:1,12',
-            'tipo_dolar' => 'required|string|exists:cotizaciones,tipo', // Valida que el tipo exista en la tabla
+            'tipo_dolar' => 'required|string|exists:cotizaciones,tipo',
             'tipo_valor' => 'required|string|in:compra,venta',
         ]);
 
         $anio = $validated['anio'];
         $mes = $validated['mes'];
         $tipoDolar = $validated['tipo_dolar'];
-        $tipoValor = $validated['tipo_valor']; // 'compra' o 'venta'
+        $tipoValor = $validated['tipo_valor'];
 
-        // 2. Construir la consulta a la base de datos
         $query = Cotizacion::query()
             ->where('tipo', $tipoDolar)
             ->whereYear('fecha', $anio)
             ->whereMonth('fecha', $mes);
             
-        // 3. Contar los registros encontrados antes de calcular el promedio
         $registrosEncontrados = $query->count();
-
-        // 4. Calcular el promedio de la columna solicitada ('compra' o 'venta')
         $promedio = $query->avg($tipoValor);
         
-        // 5. Devolver una respuesta JSON clara
         if ($registrosEncontrados === 0) {
             return response()->json([
                 'mensaje' => 'No se encontraron registros para los parámetros especificados.',
                 'parametros' => $validated,
                 'promedio' => 0,
                 'registros_encontrados' => 0,
-            ], 404); // Not Found
+            ], 404);
         }
 
         return response()->json([
             'parametros' => $validated,
-            'promedio' => round($promedio, 2), // Redondeamos a 2 decimales
+            'promedio' => round($promedio, 2),
             'registros_encontrados' => $registrosEncontrados,
         ]);
     }

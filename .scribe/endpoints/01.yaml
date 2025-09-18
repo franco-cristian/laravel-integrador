@@ -1,0 +1,51 @@
+name: 'Pruebas y Ejemplos'
+description: |-
+
+  Controladores que no pertenecen al dominio principal de la aplicación,
+  como la vista principal y endpoints de prueba.
+endpoints:
+  -
+    httpMethods:
+      - GET
+    uri: api/get-todo
+    metadata:
+      groupName: 'Pruebas y Ejemplos'
+      groupDescription: |-
+
+        Controladores que no pertenecen al dominio principal de la aplicación,
+        como la vista principal y endpoints de prueba.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Endpoint de Prueba (JSONPlaceholder)'
+      description: |-
+        Obtiene el "todo" con ID 1 desde la API pública de JSONPlaceholder.
+        Este endpoint es un ejemplo estático y no acepta parámetros.
+      authenticated: false
+      deprecated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"userId":1,"id":1,"title":"delectus aut autem","completed":false}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+        description: null
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []

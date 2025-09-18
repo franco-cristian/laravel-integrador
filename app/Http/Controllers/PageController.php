@@ -6,10 +6,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * @group Pruebas y Ejemplos
+ *
+ * Controladores que no pertenecen al dominio principal de la aplicación,
+ * como la vista principal y endpoints de prueba.
+ */
 class PageController extends Controller
 {
     /**
      * Muestra la vista principal de la aplicación.
+     * @hideFromAPIDocumentation
      */
     public function dashboard()
     {
@@ -34,8 +41,13 @@ class PageController extends Controller
     }
 
     /**
-     * Obtiene un "todo" de ejemplo desde JSONPlaceholder.
-     * Este método será llamado por nuestra API interna.
+     * Endpoint de Prueba (JSONPlaceholder)
+     * 
+     * Obtiene el "todo" con ID 1 desde la API pública de JSONPlaceholder.
+     * Este endpoint es un ejemplo estático y no acepta parámetros.
+     *
+     * @unauthenticated
+     * 
      */
     public function getTodoExample()
     {
